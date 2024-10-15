@@ -1,9 +1,6 @@
 if getgenv().bleach then warn("Bleachhack is already executed") return end
 getgenv().bleach = true
 
---LPH_NO_VIRTUALIZE = LPH_NO_VIRTUALIZE or function(f)
---	return f
---end
 
 local debris = game:GetService("Debris")
 local contentProvider = game:GetService("ContentProvider")
@@ -41,44 +38,46 @@ loadstring([[
     function LPH_NO_VIRTUALIZE(f) return f end;
 ]])();
 
-LPH_NO_VIRTUALIZE(function()
-	if not getgenv().d and #({hookmetamethod, getnamecallmethod, getproto, getconstants, hookfunction, getprotos}) == 6 and (string.match(getexecutorname(), "Wave") or string.match(getexecutorname(), "Fluxus") or string.match(getexecutorname():lower(), "macsploit")) then
-		local ReplicatedStorage = game:GetService("ReplicatedStorage")
+if not LPH_OBFUSCATED then
+    getfenv().LPH_NO_VIRTUALIZE = function(f) return f end
+  end
+  
 
-		local Handshake = ReplicatedStorage.Remotes.CharacterSoundEvent
-		local Hooks = {}
-		local HandshakeInts = {}
+  local ReplicatedStorage = game:GetService("ReplicatedStorage")
+  
 
-		Hooks.__namecall = hookmetamethod(game, "__namecall", function(self, ...)
-			local Method = getnamecallmethod()
-			local Args = {...}
-
-			if not checkcaller() and (self == Handshake) and (Method == "fireServer") and (string.find(Args[1], "AC")) then
-				if (#HandshakeInts == 0) then
-					HandshakeInts = {table.unpack(Args[2], 2, 18)}
-				else
-					for i, v in HandshakeInts do
-						Args[2][i + 1] = v
-					end
-				end
-			end
-
-			return Hooks.__namecall(self, ...)
-		end)
-
-		task.wait()
-
-		for i, v in getgc() do
-			if typeof(v) == "function" and islclosure(v) then
-				if (#getprotos(v) == 1) and table.find(getconstants(getproto(v, 1)), 4000001) then
-					hookfunction(v, function() end)
-				end
-			end
-		end
-
-		AC_BYPASS = true
-	end
-end)()
+  local Handshake = ReplicatedStorage.Remotes.CharacterSoundEvent
+  local Hooks = {}
+  local HandshakeInts = {}
+  
+  LPH_NO_VIRTUALIZE(function()
+    for i, v in getgc() do
+        if typeof(v) == "function" and islclosure(v) then
+            if (#getprotos(v) == 1) and table.find(getconstants(getproto(v, 1)), 4000001) then
+                hookfunction(v, function() end)
+            end
+        end
+    end
+  end)()
+  
+  Hooks.__namecall = hookmetamethod(game, "__namecall", LPH_NO_VIRTUALIZE(function(self, ...)
+    local Method = getnamecallmethod()
+    local Args = {...}
+  
+    if not checkcaller() and (self == Handshake) and (Method == "fireServer") and (string.find(Args[1], "AC")) then
+        if (#HandshakeInts == 0) then
+            HandshakeInts = {table.unpack(Args[2], 2, 18)}
+        else
+            for i, v in HandshakeInts do
+                Args[2][i + 1] = v
+            end
+        end
+    end
+  
+    return Hooks.__namecall(self, ...)
+  end))
+  
+  task.wait(1)
 
 if not isfolder("bleachhack") then
 	makefolder("bleachhack")
