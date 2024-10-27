@@ -1,5 +1,3 @@
-
-
 if getgenv().bleach then warn("Bleachhack is already executed") return end
 getgenv().bleach = true
 
