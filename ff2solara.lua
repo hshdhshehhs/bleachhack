@@ -44,17 +44,7 @@ if not values or IS_PRACTICE then
 	values.Name = "Values"
 end
 
-if not LPH_OBFUSCATED then
-    getfenv().LPH_NO_VIRTUALIZE = function(f) return f end
-  end
-  
 
-  local ReplicatedStorage = game:GetService("ReplicatedStorage")
-  
-
-  local Handshake = ReplicatedStorage.Remotes.CharacterSoundEvent
-  local Hooks = {}
-  local HandshakeInts = {}
 
 --// Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
