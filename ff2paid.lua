@@ -55,36 +55,87 @@ if not LPH_OBFUSCATED then
   local Handshake = ReplicatedStorage.Remotes.CharacterSoundEvent
   local Hooks = {}
   local HandshakeInts = {}
-  
-  LPH_NO_VIRTUALIZE(function()
-    for i, v in getgc() do
-        if typeof(v) == "function" and islclosure(v) then
-            if (#getprotos(v) == 1) and table.find(getconstants(getproto(v, 1)), 4000001) then
-                hookfunction(v, function() end)
-            end
-        end
-    end
-  end)()
-  
-  Hooks.__namecall = hookmetamethod(game, "__namecall", LPH_NO_VIRTUALIZE(function(self, ...)
-    local Method = getnamecallmethod()
-    local Args = {...}
-  
-    if not checkcaller() and (self == Handshake) and (Method == "fireServer") and (string.find(Args[1], "AC")) then
-        if (#HandshakeInts == 0) then
-            HandshakeInts = {table.unpack(Args[2], 2, 18)}
-        else
-            for i, v in HandshakeInts do
-                Args[2][i + 1] = v
-            end
-        end
-    end
-  
-    return Hooks.__namecall(self, ...)
-  end))
-  
-  task.wait(1)
 
+--// Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+--// Variables
+local Remote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CharacterSoundEvent")
+Remote.Parent = game:GetService("CoreGui")
+local Proxy = newproxy(true)
+local MT = getmetatable(Proxy)
+local DebugMode = true
+local AC_STRING = nil
+
+if DebugMode then
+    warn("[NG-DEBUG]: Reconstructing handshake functions and utilities.")
+end
+
+--// Functions
+MT.__call = function(v1, v2, v3, v4, v5, v6, v7)
+    if DebugMode then
+        warn("[NG-DEBUG]:", v1, v2, v3, v4, v5, v6, v7)
+    end
+
+    if ((v2 and v2 ~= v3) and v3 ~= v4) and v6 ~= MT then
+        rawset(v1, math.round(((rawget(v1, 11) / 90) ^ 0.3333333333333333 - 112) / -9) + 1, (rawget(v1, (math.floor((math.sqrt(v4 - 555, ((v2 + v3) + v5) + v6)))))))
+
+        return v1
+    end
+end
+
+--// Utilities
+local Handshake = setmetatable({
+    setmetatable({}, MT), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    math.random(1000000, 100000000), 
+    Proxy
+}, MT)
+
+--// Connections
+game:GetService("CoreGui").CharacterSoundEvent.OnClientEvent:Connect(function(Method, _, NewArgs)
+    if string.find(Method, "AC") then
+        if NewArgs then
+            for i = 1, #NewArgs do
+                AC_STRING = Method
+                Handshake[i + 1] = NewArgs[i]
+                if DebugMode then
+                    warn("[NG-DEBUG]: Updated arguments:", Handshake[i + 1])
+                end
+            end
+        end
+    end
+end)
+
+--// Loops
+task.spawn(function()
+    while task.wait(0.35) do
+        if AC_STRING then
+            game:GetService("CoreGui").CharacterSoundEvent:fireServer(AC_STRING, Handshake(887, 782, 780, 648, 659), nil)
+        end
+    end
+end)
+
+if DebugMode then
+    warn("[NG-DEBUG]: Replicated handshake. Solara Full Bypass made by jeff_hoggleberg999 or NG.")
+end
+-- creds to NG for the full solara ac bypass  
+  
 if not isfolder("bleachhack") then
 	makefolder("bleachhack")
 end
